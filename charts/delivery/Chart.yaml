@@ -1,0 +1,11 @@
+apiVersion: v2
+name: delivery
+description: Fabrikam Drone Delivery Service
+type: application
+version: 0.1.0
+appVersion: 0.1.0
+dependencies:
+  - name: delivery-dev
+    version: "0.1.0"
+    repository: "file://./envs/delivery-dev"
+
