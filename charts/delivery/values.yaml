@@ -39,7 +39,7 @@ tags:
   staging: false
 current: false
 ingress:
-  class: "nginx-dev"
+  class: "nginx-ingress-dev"
 resources:
   requests:
     cpu: 91m

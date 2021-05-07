@@ -16,6 +16,7 @@ metadata:
   name: {{ $relname }}-ingress
   annotations:
     kubernetes.io/ingress.class: {{ required "ingress.class is required" .Values.ingress.class | quote }}
+    nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /api/deliveryrequests$1
 spec:
   {{- if .Values.ingress.tls }}
@@ -24,7 +25,7 @@ spec:
   {{- if .tls }}
   - hosts:
     - {{ .name }}
-    secretName: {{ $relname }}-{{ .tlsSecretName }}
+    secretName: "ingestion-ingress-tls"
   {{- end }}
   {{- end }}
   {{- end }}
@@ -34,10 +35,10 @@ spec:
     http:
       paths:
       {{ if .path }}
-      - path: {{ printf "%s/%s/" .path $appversion }}api/deliveryrequests(.*)
+      - path: {{ printf "%s/%s/" .path $appversion }}api/deliveryrequests(/|$)(.*)
         pathType: ImplementationSpecific
       {{ else }}
-      - path: {{ $defaultversionedpath }}api/deliveryrequests(.*)
+      - path: {{ $defaultversionedpath }}api/deliveryrequests(/|$)(.*)
         pathType: ImplementationSpecific
       {{ end }}
         backend:
@@ -46,7 +47,7 @@ spec:
             port:
               name: http
       {{ if (eq $appversion "v0.1.0") }}
-      - path: {{ default "/" .path }}api/deliveryrequests(.*)
+      - path: {{ default "/" .path }}api/deliveryrequests(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:

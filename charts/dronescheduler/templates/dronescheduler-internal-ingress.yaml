@@ -26,10 +26,10 @@ spec:
     http:
       paths:
       {{- if .path }}
-      - path: {{ printf "%s/%s/" .path $appversion }}api/internal/dronedeliveries(.*)
+      - path: {{ printf "%s/%s/" .path $appversion }}api/internal/dronedeliveries(/|$)(.*)
         pathType: ImplementationSpecific
       {{- else }}
-      - path: {{ $defaultversionedpath }}api/internal/dronedeliveries(.*)
+      - path: {{ $defaultversionedpath }}api/internal/dronedeliveries(/|$)(.*)
         pathType: ImplementationSpecific
       {{- end }}
         backend:
@@ -38,7 +38,7 @@ spec:
             port:
               name: http
       {{- if (eq $appversion "v0.1.0") }}
-      - path: {{ default "/" .path }}api/internal/dronedeliveries(.*)
+      - path: {{ default "/" .path }}api/internal/dronedeliveries(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:

@@ -55,3 +55,10 @@ tags:
   prod: false
   qa: false
   staging: false
+resources:
+  requests:
+    cpu: 129m
+    memory: 100Mi
+  limits:
+    cpu: 194m
+    memory: 140Mi

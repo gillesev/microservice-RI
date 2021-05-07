@@ -290,3 +290,12 @@ __pycache__/
 .vscode
 
 src/bc-shipping/scheduler/target/*
+
+# Helm /charts directories
+charts/
+.Chart.lock
+
+# Certificate files
+*.crt
+*.key
+*deliveryresponse.json

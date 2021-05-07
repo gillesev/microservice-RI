@@ -26,10 +26,10 @@ spec:
     http:
       paths:
       {{- if .path }}
-      - path: {{ printf "%s/%s/" .path $appversion }}api/internal/package(.*)
+      - path: {{ printf "%s/%s/" .path $appversion }}api/internal/package(/|$)(.*)
         pathType: ImplementationSpecific
       {{- else }}
-      - path: {{ $defaultversionedpath }}api/internal/package(.*)
+      - path: {{ $defaultversionedpath }}api/internal/package(/|$)(.*)
         pathType: ImplementationSpecific
       {{- end }}
         backend:
@@ -38,7 +38,7 @@ spec:
             port:
               name: http
       {{- if (eq $appversion "v0.1.0") }}
-      - path: {{ default "/" .path }}api/internal/package(.*)
+      - path: {{ default "/" .path }}api/internal/package(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:

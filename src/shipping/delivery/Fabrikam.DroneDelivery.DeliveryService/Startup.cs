@@ -36,6 +36,7 @@ namespace Fabrikam.DroneDelivery.DeliveryService
 
             if (buildConfig["KEY_VAULT_URI"] is var keyVaultUri && !string.IsNullOrEmpty(keyVaultUri))
             {
+                
                 builder.AddAzureKeyVault(keyVaultUri);
             }
 

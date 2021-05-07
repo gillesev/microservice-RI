@@ -4,6 +4,7 @@
 // ------------------------------------------------------------
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,10 @@ namespace Fabrikam.DroneDelivery.DeliveryService
 {
     public class Program
     {
+        protected Program()
+        {
+        }
+
         public static void Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
@@ -23,7 +28,7 @@ namespace Fabrikam.DroneDelivery.DeliveryService
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+            Host.CreateDefaultBuilder(args)           
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
