@@ -37,3 +37,12 @@ tags:
   qa: false
   staging: false
 current: false
+ingress:
+  class: "nginx-ingress-dev"
+resources:
+  requests:
+    cpu: 91m
+    memory: 350Mi
+  limits:
+    cpu: 130m
+    memory: 500Mi

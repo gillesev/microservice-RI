@@ -14,8 +14,8 @@ RUN dotnet restore /app/delivery/Fabrikam.DroneDelivery.Common/
 RUN dotnet restore /app/dronescheduler/Fabrikam.DroneDelivery.DroneSchedulerService/
 
 WORKDIR /app
-COPY delivery/Fabrikam.DroneDelivery.Common/. ./delivery/Fabrikam.DroneDelivery.Common/
-COPY dronescheduler/Fabrikam.DroneDelivery.DroneSchedulerService/. ./dronescheduler/Fabrikam.DroneDelivery.DroneSchedulerService/
+COPY delivery/Fabrikam.DroneDelivery.Common/**/*.dll ./delivery/Fabrikam.DroneDelivery.Common/
+COPY dronescheduler/Fabrikam.DroneDelivery.DroneSchedulerService/**/*.dll ./dronescheduler/Fabrikam.DroneDelivery.DroneSchedulerService/
 
 FROM build AS publish
 

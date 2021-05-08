@@ -33,7 +33,7 @@ readinessProbe:
   initialDelaySeconds: 40
   periodSeconds: 15
   timeoutSeconds: 2
-  failureThreshold: 5
+  failureThreshold: 1000
 livenessProbe:
   exec:
     command:
@@ -43,6 +43,7 @@ livenessProbe:
     - -1
   initialDelaySeconds: 50
   periodSeconds: 30
+  failureThreshold: 1000
 keyvault:
   name:
   resourcegroup:
