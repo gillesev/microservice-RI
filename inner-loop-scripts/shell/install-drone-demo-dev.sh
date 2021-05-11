@@ -191,9 +191,9 @@ fi
 # These are deployed first in a separate template to avoid propagation delays with AAD
 
 if [ $SKIPDEPLOYMENT == "true" ];then
-  log-info "SKIP: Deploying Azure Infrastructure Pre-requisites - $DEV_PREREQ_DEPLOYMENT_NAME..."
+  log-info "SKIP: Deploying Azure Infrastructure Pre-requisites No $DEPLOYMENT_SUFFIX"
 else
-  log-warning "Deploying Azure Infrastructure Pre-requisites - $DEV_PREREQ_DEPLOYMENT_NAME..."
+  log-warning "Deploying Azure Infrastructure Pre-requisites No $DEPLOYMENT_SUFFIX"
 
   az deployment sub create \
       --name $DEV_PREREQ_DEPLOYMENT_NAME \
@@ -207,15 +207,15 @@ else
 fi
 
 #########################################################################################
-log-info "Validating Deployment - $DEV_PREREQ_DEPLOYMENT_NAME..."
+log-info "Validating Deployment No $DEPLOYMENT_SUFFIX"
 
 deploy_status=$(az deployment sub show --name $DEV_PREREQ_DEPLOYMENT_NAME --query "properties.provisioningState" -o tsv)
 
 if [ $deploy_status ==  "Succeeded" ]
 then
-  log-success "Deployment - $DEV_PREREQ_DEPLOYMENT_NAME succeeded"
+  log-success "Pre-Requisites Deployment No $DEPLOYMENT_SUFFIX succeeded"
 else
-  log-error "Deployment - $DEV_PREREQ_DEPLOYMENT_NAME failed"
+  log-error "Pre-Requisites Deployment No $DEPLOYMENT_SUFFIX failed"
   exit 1
 fi
 
@@ -239,9 +239,9 @@ until az ad sp show --id ${WORKFLOW_ID_PRINCIPAL_ID} &> /dev/null ; do echo "Wai
 export KUBERNETES_VERSION=$(az aks get-versions -l $LOCATION --query "orchestrators[?default!=null].orchestratorVersion" -o tsv)
 
 if [ $SKIPDEPLOYMENT == "true" ];then
-  log-info "SKIP: Deploying Azure Core Infrastructure - $DEV_DEPLOYMENT_NAME..."
+  log-info "SKIP: Deploying Azure Core Infrastructure No $DEPLOYMENT_SUFFIX"
 else
-  log-warning "Deploying Azure Core Infrastructure - $DEV_DEPLOYMENT_NAME..."
+  log-warning "Deploying Azure Core Infrastructure No $DEPLOYMENT_SUFFIX"
 
   az deployment group create -g $RESOURCE_GROUP --name $DEV_DEPLOYMENT_NAME --template-file ${PROJECT_ROOT}/azuredeploy.json \
   --parameters \
@@ -261,15 +261,15 @@ else
 
 fi
 
-log-info "Validating Deployment - $DEV_DEPLOYMENT_NAME..."
+log-info "Validating Deployment No $DEPLOYMENT_SUFFIX"
 
 deploy_status=$(az deployment group show --name $DEV_DEPLOYMENT_NAME -g $RESOURCE_GROUP --query "properties.provisioningState" -o tsv)
 
 if [ $deploy_status ==  "Succeeded" ]
 then
-  log-success "Deployment - $DEV_DEPLOYMENT_NAME succeeded"
+  log-success "Deployment No $DEPLOYMENT_SUFFIX succeeded"
 else
-  log-error "Deployment - $DEV_DEPLOYMENT_NAME failed"
+  log-error "Deployment No $DEPLOYMENT_SUFFIX failed"
   exit 1
 fi
 
@@ -309,10 +309,10 @@ log-verbose "AppInsights Name: $appInsightsName"
 if [ $SKIPCLIENTTOOLINGINSTALL == "true" ];then
   log-info "SKIP: Deploying Client Tooling chain: kubectl/Helm"
 else
-  log-warning "Installing kubectl..."
+  log-warning "Installing kubectl"
   az aks install-cli
 
-  log-warning "Installing Helm..."
+  log-warning "Installing Helm"
   choco install kubernetes-helm
 fi
 
@@ -324,9 +324,9 @@ az aks get-credentials --resource-group=$RESOURCE_GROUP --name=$CLUSTER_NAME --o
 # Get AKS Configuration - Core Infrastructure continue...
 
 if [ $SKIPK8SDEPLOYMENT == "true" ];then
-  log-info "SKIP: AKS Infrastructure Deployment - $DEV_DEPLOYMENT_NAME..."
+  log-info "SKIP: AKS Infrastructure Deployment No $DEPLOYMENT_SUFFIX"
 else
-  log-warning "AKS Infrastructure Deployment - $DEV_DEPLOYMENT_NAME..."
+  log-warning "AKS Infrastructure Deployment No $DEPLOYMENT_SUFFIX"
   # Create namespaces
   kubectl create namespace backend-dev
 
@@ -422,29 +422,30 @@ tlsfilenamefullpath=$rootpath/$tlsfilename
 appns=backend-$env
 
 if [ $SKIPAPPDEPLOYMENT == "true" ];then
-  log-info "SKIP: Building & Deploying Application to Infrastructure: v$version"
+  log-info "SKIP: Building & Deploying Application v$version to Infrastructure - No $DEPLOYMENT_SUFFIX"
 else
-  log-info "Building & Deploying Application to Infrastructure: v$version"
+  log-info "Building & Deploying Application v$version to Infrastructure - No $DEPLOYMENT_SUFFIX"
 
   # figure out which directory we are in and call sub scripts with its arguments.
-  pushd $execdir >/dev/null
-  ./deploy-delivery-service.sh \
-    -s $SUBSCRIPTIONID \
-    -l $LOCATION \
-    -r $RESOURCE_GROUP \
-    -k $SSH_PUBLIC_KEY_FILE \
-    -p $rootpath \
-    -d $DEV_DEPLOYMENT_NAME \
-    -a $ACR_SERVER \
-    -v $version \
-    -e $env \
-    -t $tlsfilenamefullpath.key \
-    -w $tlsfilenamefullpath.crt \
-    -i $IDENTITIES_DEPLOYMENT_NAME \
-    -b $DELIVERY_ID_NAME \
-    -n $AI_IKEY \
-    -f $EXTERNAL_INGEST_FQDN
-  popd >/dev/null
+
+  # pushd $execdir >/dev/null
+  # ./deploy-delivery-service.sh \
+  #   -s $SUBSCRIPTIONID \
+  #   -l $LOCATION \
+  #   -r $RESOURCE_GROUP \
+  #   -k $SSH_PUBLIC_KEY_FILE \
+  #   -p $rootpath \
+  #   -d $DEV_DEPLOYMENT_NAME \
+  #   -a $ACR_SERVER \
+  #   -v $version \
+  #   -e $env \
+  #   -t $tlsfilenamefullpath.key \
+  #   -w $tlsfilenamefullpath.crt \
+  #   -i $IDENTITIES_DEPLOYMENT_NAME \
+  #   -b $DELIVERY_ID_NAME \
+  #   -n $AI_IKEY \
+  #   -f $EXTERNAL_INGEST_FQDN
+  # popd >/dev/null
 
   pushd $execdir >/dev/null
   ./deploy-package-service.sh \
@@ -484,51 +485,51 @@ else
     -f $EXTERNAL_INGEST_FQDN   
   popd >/dev/null
 
-  pushd $execdir >/dev/null
-  ./deploy-ingestion-service.sh \
-    -s $SUBSCRIPTIONID \
-    -l $LOCATION \
-    -r $RESOURCE_GROUP \
-    -k $SSH_PUBLIC_KEY_FILE \
-    -p $rootpath \
-    -d $DEV_DEPLOYMENT_NAME \
-    -a $ACR_SERVER \
-    -v $version \
-    -e $env \
-    -t $tlsfilenamefullpath.key \
-    -w $tlsfilenamefullpath.crt \
-    -i $IDENTITIES_DEPLOYMENT_NAME \
-    -b "" \
-    -n $AI_IKEY \
-    -f $EXTERNAL_INGEST_FQDN    
-  popd >/dev/null
+  # pushd $execdir >/dev/null
+  # ./deploy-ingestion-service.sh \
+  #   -s $SUBSCRIPTIONID \
+  #   -l $LOCATION \
+  #   -r $RESOURCE_GROUP \
+  #   -k $SSH_PUBLIC_KEY_FILE \
+  #   -p $rootpath \
+  #   -d $DEV_DEPLOYMENT_NAME \
+  #   -a $ACR_SERVER \
+  #   -v $version \
+  #   -e $env \
+  #   -t $tlsfilenamefullpath.key \
+  #   -w $tlsfilenamefullpath.crt \
+  #   -i $IDENTITIES_DEPLOYMENT_NAME \
+  #   -b "" \
+  #   -n $AI_IKEY \
+  #   -f $EXTERNAL_INGEST_FQDN    
+  # popd >/dev/null
 
-  pushd $execdir >/dev/null
-  ./deploy-scheduler-service.sh \
-    -s $SUBSCRIPTIONID \
-    -l $LOCATION \
-    -r $RESOURCE_GROUP \
-    -k $SSH_PUBLIC_KEY_FILE \
-    -p $rootpath \
-    -d $DEV_DEPLOYMENT_NAME \
-    -a $ACR_SERVER \
-    -v $version \
-    -e $env \
-    -t $tlsfilenamefullpath.key \
-    -w $tlsfilenamefullpath.crt \
-    -i $IDENTITIES_DEPLOYMENT_NAME \
-    -b $DRONESCHEDULER_ID_NAME \
-    -n $AI_IKEY \
-    -f $EXTERNAL_INGEST_FQDN 
-  popd >/dev/null
+  # pushd $execdir >/dev/null
+  # ./deploy-scheduler-service.sh \
+  #   -s $SUBSCRIPTIONID \
+  #   -l $LOCATION \
+  #   -r $RESOURCE_GROUP \
+  #   -k $SSH_PUBLIC_KEY_FILE \
+  #   -p $rootpath \
+  #   -d $DEV_DEPLOYMENT_NAME \
+  #   -a $ACR_SERVER \
+  #   -v $version \
+  #   -e $env \
+  #   -t $tlsfilenamefullpath.key \
+  #   -w $tlsfilenamefullpath.crt \
+  #   -i $IDENTITIES_DEPLOYMENT_NAME \
+  #   -b $DRONESCHEDULER_ID_NAME \
+  #   -n $AI_IKEY \
+  #   -f $EXTERNAL_INGEST_FQDN 
+  # popd >/dev/null
 
 fi
 
 #########################################################################################
-log-info "Controlling Application Helm Releases"
+log-info "Controlling Deployed Application Helm Releases"
 helm ls --namespace $appns
 
-log-info "Controlling K8s Control Plane registered Events"
+log-info "Controlling AKS Control Plane registered Events"
 kubectl get events -n $appns
 
 #########################################################################################
@@ -555,7 +556,7 @@ curl -X POST "https://$EXTERNAL_INGEST_FQDN/0.1.0/api/deliveryrequests" --header
    },
    "pickupLocation": "my pickup",
    "pickupTime": "2019-05-08T20:00:00.000Z"
- }' > deliveryresponse.json
+ }'
 
 
 DELIVERY_ID=$(cat deliveryresponse.json | jq -r .deliveryId)
