@@ -3,9 +3,9 @@ variables:
   chartPath: charts/package
   dockerFileName: src/shipping/package/Dockerfile
   imageName: $(repositoryName):$(Build.SourceBranchName)
-  azureSubscription: AZURE_PIPELINES_SERVICE_CONN_NAME_VAR_VAL
-  azureContainerRegistry: ACR_SERVER_VAR_VAL
-  azureContainerRegistryName: ACR_NAME_VAR_VAL
+  azureSubscription: msri-cicd-service-connection
+  azureContainerRegistry: .loginServer
+  azureContainerRegistryName: .name
 
 name: $(build.sourceBranch)-$(Date:yyyyMMdd)$(Rev:.rr)
 
@@ -25,7 +25,7 @@ trigger:
     include:
       # for new release to production: release flow strategy
       - release/package/v*
-      - refs/relelase/package/v*
+      - refs/release/package/v*
       - master
       - feature/package/*
       - topic/package/*
