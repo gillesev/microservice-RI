@@ -4,8 +4,8 @@ variables:
   dockerFileName: src/shipping/package/Dockerfile
   imageName: $(repositoryName):$(Build.SourceBranchName)
   azureSubscription: msri-cicd-service-connection
-  azureContainerRegistry: .loginServer
-  azureContainerRegistryName: .name
+  azureContainerRegistry: crpgdxsrayq6u.azurecr.io
+  azureContainerRegistryName: crpgdxsrayq6u
 
 name: $(build.sourceBranch)-$(Date:yyyyMMdd)$(Rev:.rr)
 
