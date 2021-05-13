@@ -298,4 +298,7 @@ charts/
 # Certificate files
 *.crt
 *.key
+
+# From executing various DevOps scripts
 *deliveryresponse.json
+*cd-0.json

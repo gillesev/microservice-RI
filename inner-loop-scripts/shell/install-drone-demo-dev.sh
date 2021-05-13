@@ -391,12 +391,12 @@ helm ls --namespace --all-namespaces
 # Collecting output variable from deployment/existing deployment.
 
 # Obtain the load balancer ip address and assign a domain name
-until export INGRESS_LOAD_BALANCER_IP=$(kubectl get services/$ingress_service_fdqn -n $ingress_ns -o jsonpath="{.status.loadBalancer.ingress[0].ip}" 2> /dev/null) && test -n "$INGRESS_LOAD_BALANCER_IP"; do echo "Waiting for load balancer deployment" && sleep 20; done
+until export INGRESS_LOAD_BALANCER_IP=$(kubectl get services/$ingress_service_fdqn -n $ingress_ns -o jsonpath="{.status.loadBalancer.ingress[0].ip}" 2> /dev/null) && test -n "$INGRESS_LOAD_BALANCER_IP"; do echo "Waiting for load balancer deployment" && sleep 10; done
 log-verbose "INGRESS_LOAD_BALANCER_IP is: $INGRESS_LOAD_BALANCER_IP"
 
 ## This is not optimal as we have hardcoded how we obtain the resource id
 ## This does NOT work as az network public-ip do not seem to be listed unless a FQDN has been assigned???
-export INGRESS_LOAD_BALANCER_IP_ID=$(MSYS_NO_PATHCONV=1 az network lb list --query="[0].frontendIpConfigurations[1].publicIpAddress.id" --output tsv)
+until export INGRESS_LOAD_BALANCER_IP_ID=$(MSYS_NO_PATHCONV=1 az network lb list --query="[0].frontendIpConfigurations[1].publicIpAddress.id" --output tsv 2> /dev/null) && test -n "$INGRESS_LOAD_BALANCER_IP_ID"; do echo "Waiting for load balancer front End deployment" && sleep 20; done
 log-verbose "INGRESS_LOAD_BALANCER_IP_ID is: $INGRESS_LOAD_BALANCER_IP_ID"
 ## export INGRESS_LOAD_BALANCER_IP_ID=$(az network public-ip list --query "[?ipAddress!=null]|[?contains(ipAddress, '$INGRESS_LOAD_BALANCER_IP')].[id]" --output tsv)
 

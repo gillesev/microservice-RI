@@ -1,15 +1,5 @@
-parameters:
-  - name: runenvironment
-    displayName: Run Environment
-    type: string
-    default: dev
-    values:
-    - dev
-    - qa
-    - prod
-
 variables:
-  - group: microservice-ri-variables-${{ parameters.runenvironment }}
+  - group: microservice-ri-variables
   - name: azureContainerRegistry
     value: $(ACR_SERVER)
   - name: azureContainerRegistryName

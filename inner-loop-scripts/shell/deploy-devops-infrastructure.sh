@@ -46,11 +46,11 @@ function prompt {
 #########################################################################################
 
 function print_help { echo $'Usage\n\n' \
-                           $'-d ADO Organization URL\n' \
+                           $'-d ADO Organization Name\n' \
                            $'-e ADO Project Name\n' \
                            $'-s Subscription\n' \
                            $'-r GitHub Repo\n' \
-                           $'-t Service Connection GitHub PAT\n' \
+                           $'-t GitHub Personal Access Token (PAT)\n' \
                            $'-? Show Usage' \
                            >&2;
                     }
@@ -59,7 +59,7 @@ while getopts d:e:s:r:t:? option
 do
 case "${option}"
 in
-d) AZUREDEVOPSORG=${OPTARG};;
+d) AZUREDEVOPSORGNAME=${OPTARG};;
 e) AZUREDEVOPSPROJECTNAME=${OPTARG};;
 s) SUBSCRIPTIONID=${OPTARG};;
 r) SRCCODEREPOURL=${OPTARG};;
@@ -71,17 +71,18 @@ done
 # assign default values
 
 log-warning "ADO Infrastructure DEPLOYMENT: STARTING"
+log-verbose "This script can be executed before the Azure Infrastructure"
 
-log-info "ADO Organization URL:  $AZUREDEVOPSORG"
+log-info "ADO Organization Name:  $AZUREDEVOPSORGNAME"
 log-info "ADO Project Name:  $AZUREDEVOPSPROJECTNAME"
 log-info "Subscription: $SUBSCRIPTIONID"
 log-info "GitHub Repo: $SRCCODEREPOURL"
-log-info "Service Connection GitHub PAT: *********************"
+log-info "GitHub Personal Access Token (PAT): *********************"
 
 log-warning "Press [ENTER] key to proceed"
 prompt ""
 
-if [[ -z "$AZUREDEVOPSORG" \
+if [[ -z "$AZUREDEVOPSORGNAME" \
   || -z "$AZUREDEVOPSPROJECTNAME" \
   || -z "$SUBSCRIPTIONID" \
   || -z "$SRCCODEREPOURL" \
@@ -110,7 +111,7 @@ export TENANT_ID=$(az account show --query tenantId --output tsv)
 #########################################################################################
 ## Initialize Main variables
 
-AZURE_DEVOPS_ORG=$AZUREDEVOPSORG
+AZURE_DEVOPS_ORG=https://dev.azure.com/$AZUREDEVOPSORGNAME
 AZURE_DEVOPS_PROJECT_NAME=$AZUREDEVOPSPROJECTNAME
 AZURE_PIPELINES_SERVICE_CONN_NAME=msri-cicd-service-connection
 GITHUB_SERVICE_CONN_NAME=msri-github-ci-service-connection
