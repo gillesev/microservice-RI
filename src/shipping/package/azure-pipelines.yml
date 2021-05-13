@@ -4,8 +4,8 @@ variables:
   dockerFileName: src/shipping/package/Dockerfile
   imageName: $(repositoryName):$(Build.SourceBranchName)
   azureSubscription: msri-cicd-service-connection
-  azureContainerRegistry: crpgdxsrayq6u.azurecr.io
-  azureContainerRegistryName: crpgdxsrayq6u
+  azureContainerRegistry: $(ACR_SERVER)
+  azureContainerRegistryName: $(ACR_NAME)
 
 name: $(build.sourceBranch)-$(Date:yyyyMMdd)$(Rev:.rr)
 
@@ -44,7 +44,7 @@ jobs:
       vmImage: "Ubuntu 16.04"
     timeoutInMinutes: 90
     variables:
-      fullCI: $[ startsWith(variables['build.sourceBranch'], 'refs/heads/release/package/v') ]
+      fullCI: $[ startsWith(variables['build.sourceBranch'], 'refs/heads/master') ]
       buildImage: $[ eq(variables['build.sourceBranch'], 'refs/heads/master') ]
     steps:
       - task: Docker@1
@@ -88,11 +88,8 @@ jobs:
         displayName: "helm package"
         inputs:
           command: package
-
           chartPath: $(chartPath)
-
           chartVersion: $(Build.SourceBranchName)
-
           arguments: "--app-version $(Build.SourceBranchName) --dependency-update"
 
       - task: AzureCLI@1

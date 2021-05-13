@@ -16,6 +16,31 @@ LIGHTBLUE='\033[1;34m'
 LIGHTPURPLE='\033[1;35m'
 LIGHTCYAN='\033[1;36m'
 WHITE='\033[1;37m'
+
+function log-info {
+  echo -e "${PURPLE}$1${NOCOLOR}"
+}
+
+function log-success {
+  echo -e "${GREEN}$1${NOCOLOR}"
+}
+
+function log-verbose {
+  echo "$1"
+}
+
+function log-warning {
+  echo -e "${ORANGE}$1${NOCOLOR}"
+}
+
+function log-error {
+  echo -e "${RED}$1${NOCOLOR}"
+}
+
+function prompt {
+  read -p "$1"
+}
+
 # ----------------------------------
 
 #########################################################################################
@@ -51,29 +76,7 @@ o) SKIPAPPDEPLOYMENT=${OPTARG};;
 esac
 done
 
-function log-info {
-  echo -e "${PURPLE}$1${NOCOLOR}"
-}
-
-function log-success {
-  echo -e "${GREEN}$1${NOCOLOR}"
-}
-
-function log-verbose {
-  echo "$1"
-}
-
-function log-warning {
-  echo -e "${ORANGE}$1${NOCOLOR}"
-}
-
-function log-error {
-  echo -e "${RED}$1${NOCOLOR}"
-}
-
-function prompt {
-  read -p "$1"
-}
+# assign default values
 
 if [ -z "$SKIPDEPLOYMENT" ];then
   SKIPDEPLOYMENT="false"
@@ -428,24 +431,24 @@ else
 
   # figure out which directory we are in and call sub scripts with its arguments.
 
-  # pushd $execdir >/dev/null
-  # ./deploy-delivery-service.sh \
-  #   -s $SUBSCRIPTIONID \
-  #   -l $LOCATION \
-  #   -r $RESOURCE_GROUP \
-  #   -k $SSH_PUBLIC_KEY_FILE \
-  #   -p $rootpath \
-  #   -d $DEV_DEPLOYMENT_NAME \
-  #   -a $ACR_SERVER \
-  #   -v $version \
-  #   -e $env \
-  #   -t $tlsfilenamefullpath.key \
-  #   -w $tlsfilenamefullpath.crt \
-  #   -i $IDENTITIES_DEPLOYMENT_NAME \
-  #   -b $DELIVERY_ID_NAME \
-  #   -n $AI_IKEY \
-  #   -f $EXTERNAL_INGEST_FQDN
-  # popd >/dev/null
+  pushd $execdir >/dev/null
+  ./deploy-delivery-service.sh \
+    -s $SUBSCRIPTIONID \
+    -l $LOCATION \
+    -r $RESOURCE_GROUP \
+    -k $SSH_PUBLIC_KEY_FILE \
+    -p $rootpath \
+    -d $DEV_DEPLOYMENT_NAME \
+    -a $ACR_SERVER \
+    -v $version \
+    -e $env \
+    -t $tlsfilenamefullpath.key \
+    -w $tlsfilenamefullpath.crt \
+    -i $IDENTITIES_DEPLOYMENT_NAME \
+    -b $DELIVERY_ID_NAME \
+    -n $AI_IKEY \
+    -f $EXTERNAL_INGEST_FQDN
+  popd >/dev/null
 
   pushd $execdir >/dev/null
   ./deploy-package-service.sh \
@@ -485,43 +488,43 @@ else
     -f $EXTERNAL_INGEST_FQDN   
   popd >/dev/null
 
-  # pushd $execdir >/dev/null
-  # ./deploy-ingestion-service.sh \
-  #   -s $SUBSCRIPTIONID \
-  #   -l $LOCATION \
-  #   -r $RESOURCE_GROUP \
-  #   -k $SSH_PUBLIC_KEY_FILE \
-  #   -p $rootpath \
-  #   -d $DEV_DEPLOYMENT_NAME \
-  #   -a $ACR_SERVER \
-  #   -v $version \
-  #   -e $env \
-  #   -t $tlsfilenamefullpath.key \
-  #   -w $tlsfilenamefullpath.crt \
-  #   -i $IDENTITIES_DEPLOYMENT_NAME \
-  #   -b "" \
-  #   -n $AI_IKEY \
-  #   -f $EXTERNAL_INGEST_FQDN    
-  # popd >/dev/null
+  pushd $execdir >/dev/null
+  ./deploy-ingestion-service.sh \
+    -s $SUBSCRIPTIONID \
+    -l $LOCATION \
+    -r $RESOURCE_GROUP \
+    -k $SSH_PUBLIC_KEY_FILE \
+    -p $rootpath \
+    -d $DEV_DEPLOYMENT_NAME \
+    -a $ACR_SERVER \
+    -v $version \
+    -e $env \
+    -t $tlsfilenamefullpath.key \
+    -w $tlsfilenamefullpath.crt \
+    -i $IDENTITIES_DEPLOYMENT_NAME \
+    -b "" \
+    -n $AI_IKEY \
+    -f $EXTERNAL_INGEST_FQDN    
+  popd >/dev/null
 
-  # pushd $execdir >/dev/null
-  # ./deploy-scheduler-service.sh \
-  #   -s $SUBSCRIPTIONID \
-  #   -l $LOCATION \
-  #   -r $RESOURCE_GROUP \
-  #   -k $SSH_PUBLIC_KEY_FILE \
-  #   -p $rootpath \
-  #   -d $DEV_DEPLOYMENT_NAME \
-  #   -a $ACR_SERVER \
-  #   -v $version \
-  #   -e $env \
-  #   -t $tlsfilenamefullpath.key \
-  #   -w $tlsfilenamefullpath.crt \
-  #   -i $IDENTITIES_DEPLOYMENT_NAME \
-  #   -b $DRONESCHEDULER_ID_NAME \
-  #   -n $AI_IKEY \
-  #   -f $EXTERNAL_INGEST_FQDN 
-  # popd >/dev/null
+  pushd $execdir >/dev/null
+  ./deploy-scheduler-service.sh \
+    -s $SUBSCRIPTIONID \
+    -l $LOCATION \
+    -r $RESOURCE_GROUP \
+    -k $SSH_PUBLIC_KEY_FILE \
+    -p $rootpath \
+    -d $DEV_DEPLOYMENT_NAME \
+    -a $ACR_SERVER \
+    -v $version \
+    -e $env \
+    -t $tlsfilenamefullpath.key \
+    -w $tlsfilenamefullpath.crt \
+    -i $IDENTITIES_DEPLOYMENT_NAME \
+    -b $DRONESCHEDULER_ID_NAME \
+    -n $AI_IKEY \
+    -f $EXTERNAL_INGEST_FQDN 
+  popd >/dev/null
 
 fi
 
