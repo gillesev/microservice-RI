@@ -1,11 +1,29 @@
+parameters:
+  - name: runenvironment
+    displayName: Run Environment
+    type: string
+    default: dev
+    values:
+    - dev
+    - qa
+    - prod
+
 variables:
-  repositoryName: package
-  chartPath: charts/package
-  dockerFileName: src/shipping/package/Dockerfile
-  imageName: $(repositoryName):$(Build.SourceBranchName)
-  azureSubscription: msri-cicd-service-connection
-  azureContainerRegistry: $(ACR_SERVER)
-  azureContainerRegistryName: $(ACR_NAME)
+  - group: microservice-ri-variables-${{ parameters.runenvironment }}
+  - name: azureContainerRegistry
+    value: $(ACR_SERVER)
+  - name: azureContainerRegistryName
+    value: $(ACR_NAME)
+  - name: repositoryName
+    value: package
+  - name: chartPath
+    value: charts/package
+  - name: dockerFileName
+    value: src/shipping/package/Dockerfile
+  - name: imageName
+    value: $(repositoryName):$(Build.SourceBranchName)
+  - name: azureSubscription
+    value: msri-cicd-service-connection
 
 name: $(build.sourceBranch)-$(Date:yyyyMMdd)$(Rev:.rr)
 
@@ -52,14 +70,10 @@ jobs:
         displayName: "Build runtime image"
         inputs:
           azureSubscriptionEndpoint: $(azureSubscription)
-
           azureContainerRegistry: $(azureContainerRegistry)
-
           dockerFile: $(System.DefaultWorkingDirectory)/$(dockerFileName)
-
           includeLatestTag: true
-
-          imageName: "$(imageName)"
+          imageName: "$(imageName)"         
 
       - task: Docker@1
         condition: eq(variables['fullCI'],True)

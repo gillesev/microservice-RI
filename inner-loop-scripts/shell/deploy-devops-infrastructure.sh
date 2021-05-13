@@ -50,7 +50,7 @@ function print_help { echo $'Usage\n\n' \
                            $'-e ADO Project Name\n' \
                            $'-s Subscription\n' \
                            $'-r GitHub Repo\n' \
-                           $'-t GitHub PAT\n' \
+                           $'-t Service Connection GitHub PAT\n' \
                            $'-? Show Usage' \
                            >&2;
                     }
@@ -76,7 +76,7 @@ log-info "ADO Organization URL:  $AZUREDEVOPSORG"
 log-info "ADO Project Name:  $AZUREDEVOPSPROJECTNAME"
 log-info "Subscription: $SUBSCRIPTIONID"
 log-info "GitHub Repo: $SRCCODEREPOURL"
-log-info "GitHub PAT: *********************"
+log-info "Service Connection GitHub PAT: *********************"
 
 log-warning "Press [ENTER] key to proceed"
 prompt ""
